@@ -42,14 +42,20 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: Column(
         verticalDirection: VerticalDirection.up,
         children: <Widget>[
-          FloatingActionButton(onPressed: () {}),
-          const SizedBox(height: 16),
-          FloatingActionButton(onPressed: () {}),
+          FloatingActionButton(
+            onPressed: () {},
+            child: const Icon(Icons.restaurant, color: Colors.white),
+          ),
           const SizedBox(height: 16),
           FloatingActionButton(
             onPressed: () {},
-            child: const Icon(Icons.question_mark, color: Colors.white),
+            child: const Icon(Icons.event, color: Colors.white),
+          ),
+          const SizedBox(height: 16),
+          FloatingActionButton(
+            onPressed: () {},
             shape: CircleBorder(),
+            child: const Icon(Icons.question_mark, color: Colors.white),
           ),
         ],
       ),
