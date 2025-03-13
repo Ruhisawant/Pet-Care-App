@@ -30,6 +30,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   String _nameText = "Input Name";
+  String _asset = "assets/images/Dog.png";
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +39,9 @@ class _MainPageState extends State<MainPage> {
       body: Center(
         child: Column(
           children: <Widget>[
-            const SizedBox(height: 100),
-            Image.asset(
-              'assets/images/dog.png',
-              height: 100,
-              width: 100,
-              scale: 2.5,
-            ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 75),
+            Image.asset(_asset, height: 200, width: 300, scale: .8),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -78,7 +74,7 @@ class _MainPageState extends State<MainPage> {
                     child: Center(child: Text(_nameText)),
                   ),
                 ),
-                Expanded(flex: 4, child: Text('')),
+                Expanded(flex: 4, child: SizedBox(width: 1)),
               ],
             ),
           ],
