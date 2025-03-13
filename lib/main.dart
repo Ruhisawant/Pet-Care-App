@@ -39,29 +39,46 @@ class _MainPageState extends State<MainPage> {
         child: Column(
           children: <Widget>[
             const SizedBox(height: 100),
-            Center(
-              child: Container(
-                width: 250,
-                height: 250,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/Dog.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
+            Image.asset(
+              'assets/images/dog.png',
+              height: 100,
+              width: 100,
+              scale: 2.5,
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                FloatingActionButton.small(
-                  onPressed: () {},
-                  shape: CircleBorder(),
-                  child: Icon(Icons.edit, color: Colors.white),
+                Expanded(flex: 2, child: Text('')),
+                Expanded(
+                  flex: 2,
+                  child: FloatingActionButton.small(
+                    onPressed: () {},
+                    shape: CircleBorder(),
+                    child: Icon(Icons.edit, color: Colors.white),
+                  ),
                 ),
-                const SizedBox(width: 10),
-                Text(_nameText),
+                Expanded(
+                  flex: 5,
+                  child: Container(
+                    height: 35,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10.0,
+                          spreadRadius: 2.0,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Center(child: Text(_nameText)),
+                  ),
+                ),
+                Expanded(flex: 4, child: Text('')),
               ],
             ),
           ],
