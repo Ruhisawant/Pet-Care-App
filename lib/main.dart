@@ -14,33 +14,35 @@ class PetCareApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const HomePage(title: 'Pet Care'),
+      home: const MainPage(title: 'Pet Care'),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MainPageState extends State<MainPage> {
+  String _nameText = "Input Name";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 241, 255, 232),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            const SizedBox(height: 100),
             Center(
               child: Container(
-                width: 100,
-                height: 100,
+                width: 250,
+                height: 250,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/images/Dog.png'),
@@ -50,17 +52,17 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 10),
-            Center(
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/Dog.png'),
-                    fit: BoxFit.cover,
-                  ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                FloatingActionButton.small(
+                  onPressed: () {},
+                  shape: CircleBorder(),
+                  child: Icon(Icons.edit, color: Colors.white),
                 ),
-              ),
+                const SizedBox(width: 10),
+                Text(_nameText),
+              ],
             ),
           ],
         ),
