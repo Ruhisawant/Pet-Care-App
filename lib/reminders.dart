@@ -28,29 +28,111 @@ class _RemindersState extends State<Reminders> {
   List<Plan> plans = [];
   // final dateFormat = DateFormat('MM dd, yyyy');
 
-  void createPlan(String name, String description, DateTime date, String priority) {
+  createPlan(String name, String description, String priority) {
     if (name.isEmpty) return;
-    
-    final newPlan = Plan(
-      name: name,
-      description: description,
-      // date: date,
-      priority: priority,
-      isCompleted: false,
-    );
 
     setState(() {
-      plans.add(newPlan);
-      // _sortPlansByPriority();
+      plans.add(Plan(name: name, description: description, priority: priority, isCompleted: false,));
+      _sortPlansByPriority();
+    });
+  }
+
+  void toggleCompletion(int index) {
+    setState(() {
+      plans[index].isCompleted = !plans[index].isCompleted;
     });
   }
 
   void updatePlan(Plan plan) {
     setState(() {
-      // _sortPlansByPriority();
+      _sortPlansByPriority();
     });
   }
 
+  void _sortPlansByPriority() {
+    setState(() {
+      plans.sort((a, b) {
+        final priorityComparison =
+            _getPriorityValue(b.priority).compareTo(_getPriorityValue(a.priority));
+        if (priorityComparison != 0) return priorityComparison;
+        
+        return a.name.compareTo(b.name);
+      });
+    });
+  }
+
+  int _getPriorityValue(String priority) {
+    switch (priority) {
+      case 'High':
+        return 3;
+      case 'Medium':
+        return 2;
+      case 'Low':
+        return 1;
+      default:
+        return 0;
+    }
+  }
+
+  void showAddReminderDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final descriptionController = TextEditingController();
+    String selectedPriority = 'Medium';
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: Text("Add Reminder"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(labelText: "Title"),
+                  ),
+                  TextField(
+                    controller: descriptionController,
+                    decoration: InputDecoration(labelText: "Description"),
+                  ),
+                  DropdownButton<String>(
+                    value: selectedPriority,
+                    onChanged: (newValue) {
+                      setDialogState(() {
+                        selectedPriority = newValue!;
+                      });
+                    },
+                    items: ['High', 'Medium', 'Low']
+                        .map((priority) => DropdownMenuItem(
+                              value: priority,
+                              child: Text(priority),
+                            ))
+                        .toList(),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    createPlan(nameController.text, descriptionController.text, selectedPriority);
+                    Navigator.pop(context);
+                  },
+                  child: Text("Add"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,19 +141,45 @@ class _RemindersState extends State<Reminders> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(),
-                  ),
-                );
-              },
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              ),
               child: Text('Go to Home')
             ),
-            
-          ],
-        ),
+            Expanded(
+              child: plans.isEmpty
+                ? Center(child: Text("No reminders yet!", style: TextStyle(fontSize: 16)))
+                : ListView.builder(
+                    itemCount: plans.length,
+                    itemBuilder: (context, index) {
+                      final plan = plans[index];
+                      return ListTile(
+                        leading: IconButton(
+                          icon: Icon(
+                            plan.isCompleted ? Icons.check_circle : Icons.circle_outlined,
+                            color: plan.isCompleted ? Colors.green : Colors.grey,
+                          ),
+                          onPressed: () => toggleCompletion(index),
+                        ),
+                        title: Text(
+                          plan.name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            decoration: plan.isCompleted ? TextDecoration.lineThrough : null,
+                          ),
+                        ),
+                        subtitle: Text(plan.description),
+                      );
+                    }
+                  )
+            ),
+            FloatingActionButton(
+              onPressed: () => showAddReminderDialog(context),
+              child: Icon(Icons.add), 
+            )
+          ]
+        )
       )
     );
   }
