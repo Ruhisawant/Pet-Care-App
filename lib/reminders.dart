@@ -53,7 +53,7 @@ class _RemindersState extends State<Reminders> {
     setState(() {
       plans.sort((a, b) {
         final priorityComparison =
-            _getPriorityValue(b.priority).compareTo(_getPriorityValue(a.priority));
+            getPriorityValue(b.priority).compareTo(getPriorityValue(a.priority));
         if (priorityComparison != 0) return priorityComparison;
         
         return a.name.compareTo(b.name);
@@ -61,7 +61,7 @@ class _RemindersState extends State<Reminders> {
     });
   }
 
-  int _getPriorityValue(String priority) {
+  int getPriorityValue(String priority) {
     switch (priority) {
       case 'High':
         return 3;
@@ -72,6 +72,25 @@ class _RemindersState extends State<Reminders> {
       default:
         return 0;
     }
+  }
+
+  Color getPriorityColor(String priority) {
+    switch (priority) {
+      case 'High':
+        return Colors.red.shade300;
+      case 'Medium':
+        return Colors.orange.shade300;
+      case 'Low':
+        return Colors.blue.shade300;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  void deletePlan(Plan plan) async {
+    setState(() {
+      plans.remove(plan);
+    });
   }
 
   void showAddReminderDialog(BuildContext context) {
@@ -155,10 +174,11 @@ class _RemindersState extends State<Reminders> {
                     itemBuilder: (context, index) {
                       final plan = plans[index];
                       return ListTile(
+                        tileColor: plan.isCompleted ? Colors.green[300] : getPriorityColor(plan.priority),
                         leading: IconButton(
                           icon: Icon(
                             plan.isCompleted ? Icons.check_circle : Icons.circle_outlined,
-                            color: plan.isCompleted ? Colors.green : Colors.grey,
+                            color: plan.isCompleted ? Colors.blue : Colors.grey,
                           ),
                           onPressed: () => toggleCompletion(index),
                         ),
