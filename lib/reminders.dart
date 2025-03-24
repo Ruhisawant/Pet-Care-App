@@ -28,39 +28,6 @@ class _RemindersState extends State<Reminders> {
   List<Plan> plans = [];
   // final dateFormat = DateFormat('MM dd, yyyy');
 
-  createPlan(String name, String description, String priority) {
-    if (name.isEmpty) return;
-
-    setState(() {
-      plans.add(Plan(name: name, description: description, priority: priority, isCompleted: false,));
-      _sortPlansByPriority();
-    });
-  }
-
-  void toggleCompletion(int index) {
-    setState(() {
-      plans[index].isCompleted = !plans[index].isCompleted;
-    });
-  }
-
-  void updatePlan(Plan plan) {
-    setState(() {
-      _sortPlansByPriority();
-    });
-  }
-
-  void _sortPlansByPriority() {
-    setState(() {
-      plans.sort((a, b) {
-        final priorityComparison =
-            getPriorityValue(b.priority).compareTo(getPriorityValue(a.priority));
-        if (priorityComparison != 0) return priorityComparison;
-        
-        return a.name.compareTo(b.name);
-      });
-    });
-  }
-
   int getPriorityValue(String priority) {
     switch (priority) {
       case 'High':
@@ -86,10 +53,42 @@ class _RemindersState extends State<Reminders> {
         return Colors.grey;
     }
   }
+  
+  createPlan(String name, String description, String priority) {
+    if (name.isEmpty) return;
 
-  void deletePlan(Plan plan) async {
+    setState(() {
+      plans.add(Plan(name: name, description: description, priority: priority, isCompleted: false,));
+      _sortPlansByPriority();
+    });
+  }
+
+  void updatePlan(Plan plan) {
+    setState(() {
+      _sortPlansByPriority();
+    });
+  }
+
+  void deletePlan(Plan plan) {
     setState(() {
       plans.remove(plan);
+    });
+  }
+
+  void toggleCompletion(int index) {
+    setState(() {
+      plans[index].isCompleted = !plans[index].isCompleted;
+    });
+  }
+
+  void _sortPlansByPriority() {
+    setState(() {
+      plans.sort((a, b) {
+        final priorityComparison = getPriorityValue(b.priority).compareTo(getPriorityValue(a.priority));
+        if (priorityComparison != 0) return priorityComparison;
+        
+        return a.name.compareTo(b.name);
+      });
     });
   }
 
@@ -155,52 +154,99 @@ class _RemindersState extends State<Reminders> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center( 
-       child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: Padding( 
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             ElevatedButton(
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => HomePage()),
               ),
-              child: Text('Go to Home')
+              child: Text('Home')
             ),
+
+            SizedBox(height: 20),
             Expanded(
               child: plans.isEmpty
-                ? Center(child: Text("No reminders yet!", style: TextStyle(fontSize: 16)))
+                ? Center(child: Text("No reminders yet!", style: TextStyle(fontSize: 20)))
                 : ListView.builder(
                     itemCount: plans.length,
                     itemBuilder: (context, index) {
                       final plan = plans[index];
-                      return ListTile(
-                        tileColor: plan.isCompleted ? Colors.green[300] : getPriorityColor(plan.priority),
-                        leading: IconButton(
-                          icon: Icon(
-                            plan.isCompleted ? Icons.check_circle : Icons.circle_outlined,
-                            color: plan.isCompleted ? Colors.blue : Colors.grey,
-                          ),
-                          onPressed: () => toggleCompletion(index),
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 6),
+                        decoration: BoxDecoration(
+                          color: plan.isCompleted ? Colors.green[200] : Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade300),     
                         ),
-                        title: Text(
-                          plan.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            decoration: plan.isCompleted ? TextDecoration.lineThrough : null,
+                        child: ListTile(
+                          leading: IconButton(
+                            icon: Icon(
+                              plan.isCompleted ? Icons.check_circle : Icons.circle_outlined,
+                              color: plan.isCompleted ? Colors.green : Colors.grey,
+                            ),
+                            onPressed: () => toggleCompletion(index),
                           ),
-                        ),
-                        subtitle: Text(plan.description),
+                          title: Text(
+                            plan.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              decoration: plan.isCompleted ? TextDecoration.lineThrough : null,
+                            ),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  // Text(
+                                  //   'Date: ${plan.date}',
+                                  //   style: TextStyle(
+                                  //     fontSize: 12,
+                                  //     color: Colors.black,
+                                  //     fontWeight: FontWeight.bold,
+                                  //   ),
+                                  // ),
+                                  // SizedBox(width: 10),
+                                  Text(
+                                    'Priority: ${plan.priority}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: getPriorityColor(plan.priority),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 4),
+                              Text(plan.description),
+                            ],
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () => deletePlan(plan),
+                          ),
+                        )
                       );
                     }
                   )
             ),
-            FloatingActionButton(
-              onPressed: () => showAddReminderDialog(context),
-              child: Icon(Icons.add), 
-            )
           ]
         )
-      )
+      ),
+      floatingActionButton: Align(
+        alignment: Alignment.bottomRight,
+        child: FloatingActionButton(
+          onPressed: () => showAddReminderDialog(context),
+          child: Icon(Icons.add),
+        ),
+      ),      
     );
   }
 }
