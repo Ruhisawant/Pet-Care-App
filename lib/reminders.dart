@@ -10,23 +10,22 @@ class Reminders extends StatefulWidget {
 
 class Plan{
   String name;
-  String description;
-  // DateTime date;
+  String date;
   String priority;
+  String description;
   bool isCompleted;
 
   Plan({
     required this.name,
-    required this.description,
-    // required this.date,
+    required this.date,
     required this.priority,
+    required this.description,
     required this.isCompleted
   });
 }
 
 class _RemindersState extends State<Reminders> {
   List<Plan> plans = [];
-  // final dateFormat = DateFormat('MM dd, yyyy');
 
   int getPriorityValue(String priority) {
     switch (priority) {
@@ -54,11 +53,11 @@ class _RemindersState extends State<Reminders> {
     }
   }
   
-  createPlan(String name, String description, String priority) {
+  createPlan(String name, String date, String priority, String description) {
     if (name.isEmpty) return;
 
     setState(() {
-      plans.add(Plan(name: name, description: description, priority: priority, isCompleted: false,));
+      plans.add(Plan(name: name, date: date, priority: priority, description: description, isCompleted: false));
       _sortPlansByPriority();
     });
   }
@@ -94,6 +93,7 @@ class _RemindersState extends State<Reminders> {
 
   void showAddReminderDialog(BuildContext context) {
     final nameController = TextEditingController();
+    final dateController = TextEditingController();
     final descriptionController = TextEditingController();
     String selectedPriority = 'Medium';
 
@@ -115,6 +115,10 @@ class _RemindersState extends State<Reminders> {
                     controller: descriptionController,
                     decoration: InputDecoration(labelText: "Description"),
                   ),
+                  TextField(
+                    controller: dateController,
+                    decoration: InputDecoration(labelText: "Date (MM-DD-YYYY)"),
+                  ),
                   DropdownButton<String>(
                     value: selectedPriority,
                     onChanged: (newValue) {
@@ -123,11 +127,11 @@ class _RemindersState extends State<Reminders> {
                       });
                     },
                     items: ['High', 'Medium', 'Low']
-                        .map((priority) => DropdownMenuItem(
-                              value: priority,
-                              child: Text(priority),
-                            ))
-                        .toList(),
+                      .map((priority) => DropdownMenuItem(
+                        value: priority,
+                        child: Text(priority),
+                      ))
+                      .toList(),
                   ),
                 ],
               ),
@@ -138,7 +142,7 @@ class _RemindersState extends State<Reminders> {
                 ),
                 TextButton(
                   onPressed: () {
-                    createPlan(nameController.text, descriptionController.text, selectedPriority);
+                    createPlan(nameController.text, dateController.text, selectedPriority, descriptionController.text);
                     Navigator.pop(context);
                   },
                   child: Text("Add"),
@@ -202,15 +206,15 @@ class _RemindersState extends State<Reminders> {
                             children: [
                               Row(
                                 children: [
-                                  // Text(
-                                  //   'Date: ${plan.date}',
-                                  //   style: TextStyle(
-                                  //     fontSize: 12,
-                                  //     color: Colors.black,
-                                  //     fontWeight: FontWeight.bold,
-                                  //   ),
-                                  // ),
-                                  // SizedBox(width: 10),
+                                  Text(
+                                    'Date: ${plan.date}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
                                   Text(
                                     'Priority: ${plan.priority}',
                                     style: TextStyle(
@@ -228,7 +232,7 @@ class _RemindersState extends State<Reminders> {
                           trailing: IconButton(
                             icon: Icon(
                               Icons.delete,
-                              color: Colors.grey,
+                              color: Colors.red.shade300,
                             ),
                             onPressed: () => deletePlan(plan),
                           ),
