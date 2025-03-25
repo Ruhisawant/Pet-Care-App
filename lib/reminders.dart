@@ -8,11 +8,9 @@ class Reminders extends StatefulWidget {
   State<Reminders> createState() => _RemindersState();
 }
 
-class Plan{
-  String name;
+class Plan {
+  String name, priority, description;
   DateTime date;
-  String priority;
-  String description;
   bool isCompleted;
 
   Plan({
@@ -20,260 +18,179 @@ class Plan{
     required this.date,
     required this.priority,
     required this.description,
-    required this.isCompleted
+    this.isCompleted = false,
   });
+
+  void toggleCompletion() => isCompleted = !isCompleted;
+
+  static int getPriorityValue(String priority) => 
+    {'High': 3, 'Medium': 2, 'Low': 1}[priority] ?? 0;
+
+  static Color getPriorityColor(String priority) => 
+    {'High': Colors.red.shade300, 'Medium': Colors.orange.shade300, 'Low': Colors.blue.shade300}[priority] ?? Colors.grey;
 }
 
 class _RemindersState extends State<Reminders> {
   List<Plan> plans = [];
 
-  int getPriorityValue(String priority) {
-    switch (priority) {
-      case 'High':
-        return 3;
-      case 'Medium':
-        return 2;
-      case 'Low':
-        return 1;
-      default:
-        return 0;
-    }
-  }
-
-  Color getPriorityColor(String priority) {
-    switch (priority) {
-      case 'High':
-        return Colors.red.shade300;
-      case 'Medium':
-        return Colors.orange.shade300;
-      case 'Low':
-        return Colors.blue.shade300;
-      default:
-        return Colors.grey;
-    }
-  }
-  
-  createPlan(String name, DateTime date, String priority, String description) {
-    if (name.isEmpty) return;
-
-    setState(() {
-      plans.add(Plan(name: name, date: date, priority: priority, description: description, isCompleted: false));
-      _sortPlansByPriority();
-    });
-  }
-
-  void updatePlan(Plan plan) {
-    setState(() {
-      _sortPlansByPriority();
-    });
-  }
-
-  void deletePlan(Plan plan) {
-    setState(() {
-      plans.remove(plan);
-    });
-  }
-
-  void toggleCompletion(int index) {
-    setState(() {
-      plans[index].isCompleted = !plans[index].isCompleted;
-    });
-  }
-
-  void _sortPlansByPriority() {
-    setState(() {
-      plans.sort((a, b) {
-        final priorityComparison = getPriorityValue(b.priority).compareTo(getPriorityValue(a.priority));
-        if (priorityComparison != 0) return priorityComparison;
-        
-        return a.name.compareTo(b.name);
-      });
-    });
-  }
-
-  void showAddReminderDialog(BuildContext context) {
-    final nameController = TextEditingController();
-    final dateController = TextEditingController();
-    final descriptionController = TextEditingController();
-    String selectedPriority = 'Medium';
-    DateTime? selectedDate;
+  void createUpdatePlan({Plan? plan}) {
+    final nameController = TextEditingController(text: plan?.name ?? '');
+    final descriptionController = TextEditingController(text: plan?.description ?? '');
+    final dateController = TextEditingController(text: plan != null ? "${plan.date.toLocal()}".split(' ')[0] : '');
+    String selectedPriority = plan?.priority ?? 'Medium';
+    DateTime selectedDate = plan?.date ?? DateTime.now();
 
     showDialog(
       context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              title: Text("Add Reminder"),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(labelText: "Title"),
-                  ),
-                  TextField(
-                    controller: descriptionController,
-                    decoration: InputDecoration(labelText: "Description"),
-                  ),
-                  TextField(
-                    controller: dateController,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      labelText: "Date",
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.calendar_today),
-                        onPressed: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime(2100),
-                          );
-                          if (pickedDate != null) {
-                            setDialogState(() {
-                              selectedDate = pickedDate;
-                              dateController.text = "${pickedDate.toLocal()}".split(' ')[0];
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                  DropdownButton<String>(
-                    value: selectedPriority,
-                    onChanged: (newValue) {
-                      setDialogState(() {
-                        selectedPriority = newValue!;
-                      });
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text(plan == null ? "Add Reminder" : "Edit Reminder"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(controller: nameController, decoration: InputDecoration(labelText: "Title")),
+              TextField(controller: descriptionController, decoration: InputDecoration(labelText: "Description")),
+              TextField(
+                controller: dateController,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: "Date",
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context, initialDate: selectedDate, firstDate: DateTime(2000), lastDate: DateTime(2100),
+                      );
+                      if (pickedDate != null) {
+                        setDialogState(() {
+                          selectedDate = pickedDate;
+                          dateController.text = "${pickedDate.toLocal()}".split(' ')[0];
+                        });
+                      }
                     },
-                    items: ['High', 'Medium', 'Low']
-                      .map((priority) => DropdownMenuItem(
-                        value: priority,
-                        child: Text(priority),
-                      ))
-                      .toList(),
                   ),
-                ],
+                ),
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text("Cancel"),
-                ),
-                TextButton(
-                  onPressed: () {
-                    if (selectedDate != null && nameController.text.isNotEmpty) {
-                      createPlan(nameController.text, selectedDate!, selectedPriority, descriptionController.text);
-                    }
-                    Navigator.pop(context);
-                  },
-                  child: Text("Add"),
-                ),
-              ],
-            );
-          },
-        );
-      },
+              DropdownButton<String>(
+                value: selectedPriority,
+                onChanged: (newValue) => setDialogState(() => selectedPriority = newValue!),
+                items: ['High', 'Medium', 'Low'].map((priority) => DropdownMenuItem(value: priority, child: Text(priority))).toList(),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+            TextButton(
+              onPressed: () {
+                if (nameController.text.isEmpty) return;
+                setState(() {
+                  if (plan == null) {
+                    plans.add(Plan(name: nameController.text, date: selectedDate, priority: selectedPriority, description: descriptionController.text));
+                  } else {
+                    plan.name = nameController.text;
+                    plan.description = descriptionController.text;
+                    plan.date = selectedDate;
+                    plan.priority = selectedPriority;
+                  }
+                  plans.sort((a, b) => Plan.getPriorityValue(b.priority).compareTo(Plan.getPriorityValue(a.priority)));
+                });
+                Navigator.pop(context);
+              },
+              child: Text(plan == null ? "Add" : "Save"),
+            ),
+          ],
+        ),
+      ),
     );
   }
-  
+
+  void deletePlan(Plan plan) => setState(() => plans.remove(plan));
+
+  void toggleCompletion(Plan plan) => setState(() => plan.toggleCompletion());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding( 
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
+          children: [
             ElevatedButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              ),
-              child: Text('Home')
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage())),
+              child: Text('Home'),
             ),
-
             SizedBox(height: 20),
             Expanded(
               child: plans.isEmpty
-                ? Center(child: Text("No reminders yet!", style: TextStyle(fontSize: 20)))
-                : ListView.builder(
-                    itemCount: plans.length,
-                    itemBuilder: (context, index) {
-                      final plan = plans[index];
-                      return Container(
-                        margin: EdgeInsets.symmetric(vertical: 6),
-                        decoration: BoxDecoration(
-                          color: plan.isCompleted ? Colors.green[200] : Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey.shade300),     
-                        ),
-                        child: ListTile(
-                          leading: IconButton(
-                            icon: Icon(
-                              plan.isCompleted ? Icons.check_circle : Icons.circle_outlined,
-                              color: plan.isCompleted ? Colors.green : Colors.grey,
-                            ),
-                            onPressed: () => toggleCompletion(index),
-                          ),
-                          title: Text(
-                            plan.name,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              decoration: plan.isCompleted ? TextDecoration.lineThrough : null,
-                            ),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Date: ${plan.date.toLocal().toString().split(' ')[0]}  |',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(width: 9),
-                                  Text(
-                                    'Priority: ${plan.priority}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: getPriorityColor(plan.priority),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 4),
-                              Text(plan.description),
-                            ],
-                          ),
-                          trailing: IconButton(
-                            icon: Icon(
-                              Icons.delete,
-                              color: Colors.red.shade300,
-                            ),
-                            onPressed: () => deletePlan(plan),
-                          ),
-                        )
-                      );
-                    }
-                  )
+                  ? Center(child: Text("No reminders yet!", style: TextStyle(fontSize: 20)))
+                  : ListView.builder(
+                      itemCount: plans.length,
+                      itemBuilder: (context, index) => PlanTile(
+                        plan: plans[index],
+                        onToggleCompletion: () => toggleCompletion(plans[index]),
+                        onDelete: () => deletePlan(plans[index]),
+                        onEdit: () => createUpdatePlan(plan: plans[index]),
+                      ),
+                    ),
             ),
-          ]
-        )
-      ),
-      floatingActionButton: Align(
-        alignment: Alignment.bottomRight,
-        child: FloatingActionButton(
-          onPressed: () => showAddReminderDialog(context),
-          child: Icon(Icons.add),
+          ],
         ),
-      ),      
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => createUpdatePlan(),
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class PlanTile extends StatelessWidget {
+  final Plan plan;
+  final VoidCallback onToggleCompletion, onDelete, onEdit;
+
+  const PlanTile({required this.plan, required this.onToggleCompletion, required this.onDelete, required this.onEdit, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 6),
+      decoration: BoxDecoration(
+        color: plan.isCompleted ? Colors.green[200] : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: ListTile(
+        leading: IconButton(
+          icon: Icon(plan.isCompleted ? Icons.check_circle : Icons.circle_outlined, color: plan.isCompleted ? Colors.green : Colors.grey),
+          onPressed: onToggleCompletion,
+        ),
+        title: Text(
+          plan.name,
+          style: TextStyle(fontWeight: FontWeight.bold, decoration: plan.isCompleted ? TextDecoration.lineThrough : null),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text('Date: ${plan.date.toLocal().toString().split(' ')[0]}  |', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                SizedBox(width: 9),
+                Text('Priority: ${plan.priority}', style: TextStyle(fontSize: 12, color: Plan.getPriorityColor(plan.priority), fontWeight: FontWeight.bold)),
+              ],
+            ),
+            SizedBox(height: 4),
+            Text(plan.description),
+          ],
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(icon: Icon(Icons.edit, color: Colors.blue.shade300), onPressed: onEdit),
+            IconButton(icon: Icon(Icons.delete, color: Colors.red.shade300), onPressed: onDelete),
+          ],
+        ),
+      ),
     );
   }
 }
