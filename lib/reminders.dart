@@ -10,7 +10,7 @@ class Reminders extends StatefulWidget {
 
 class Plan{
   String name;
-  String date;
+  DateTime date;
   String priority;
   String description;
   bool isCompleted;
@@ -53,7 +53,7 @@ class _RemindersState extends State<Reminders> {
     }
   }
   
-  createPlan(String name, String date, String priority, String description) {
+  createPlan(String name, DateTime date, String priority, String description) {
     if (name.isEmpty) return;
 
     setState(() {
@@ -96,6 +96,7 @@ class _RemindersState extends State<Reminders> {
     final dateController = TextEditingController();
     final descriptionController = TextEditingController();
     String selectedPriority = 'Medium';
+    DateTime? selectedDate;
 
     showDialog(
       context: context,
@@ -117,7 +118,27 @@ class _RemindersState extends State<Reminders> {
                   ),
                   TextField(
                     controller: dateController,
-                    decoration: InputDecoration(labelText: "Date (MM-DD-YYYY)"),
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: "Date",
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.calendar_today),
+                        onPressed: () async {
+                          DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2100),
+                          );
+                          if (pickedDate != null) {
+                            setDialogState(() {
+                              selectedDate = pickedDate;
+                              dateController.text = "${pickedDate.toLocal()}".split(' ')[0];
+                            });
+                          }
+                        },
+                      ),
+                    ),
                   ),
                   DropdownButton<String>(
                     value: selectedPriority,
@@ -142,7 +163,9 @@ class _RemindersState extends State<Reminders> {
                 ),
                 TextButton(
                   onPressed: () {
-                    createPlan(nameController.text, dateController.text, selectedPriority, descriptionController.text);
+                    if (selectedDate != null && nameController.text.isNotEmpty) {
+                      createPlan(nameController.text, selectedDate!, selectedPriority, descriptionController.text);
+                    }
                     Navigator.pop(context);
                   },
                   child: Text("Add"),
@@ -207,14 +230,14 @@ class _RemindersState extends State<Reminders> {
                               Row(
                                 children: [
                                   Text(
-                                    'Date: ${plan.date}',
+                                    'Date: ${plan.date.toLocal().toString().split(' ')[0]}  |',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  SizedBox(width: 10),
+                                  SizedBox(width: 9),
                                   Text(
                                     'Priority: ${plan.priority}',
                                     style: TextStyle(
