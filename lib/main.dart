@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'reminders.dart';
+import 'care.dart';
 
 void main() {
   runApp(const PetCareApp());
@@ -45,6 +46,17 @@ class _HomePageState extends State<HomePage> {
                 );
               },
               child: Text('Go to Reminders')
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Care(),
+                  ),
+                );
+              },
+              child: Text('Go to Care')
             ),
           ],
         ),
