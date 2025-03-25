@@ -139,6 +139,7 @@ class _RemindersState extends State<Reminders> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => createUpdatePlan(),
+        tooltip: 'Add Plan',
         child: Icon(Icons.add),
       ),
     );
