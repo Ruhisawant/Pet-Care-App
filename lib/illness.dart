@@ -119,7 +119,7 @@ class _IllnessPageState extends State<IllnessPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.purple[100],
+        backgroundColor: Colors.orange[50],
         title: const Text('Illness'),
       ),
       body: SingleChildScrollView(
@@ -141,7 +141,7 @@ class _IllnessPageState extends State<IllnessPage> {
                   String symptom = symptomInfo.keys.elementAt(index);
                   return Card(
                     margin: const EdgeInsets.symmetric(vertical: 6.0),
-                    color: Colors.purple[200],
+                    color: Colors.orange[200],
                     child: ListTile(
                       title: Text(symptom),
                       onTap: () => _showIllnessDetails(context, symptom),

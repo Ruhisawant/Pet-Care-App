@@ -111,19 +111,18 @@ class _RemindersPageState extends State<RemindersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.purple[100],
+        title: const Text('Reminders'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ElevatedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage())),
-              child: Text('Home'),
-            ),
-            SizedBox(height: 20),
             Expanded(
               child: plans.isEmpty
-                  ? Center(child: Text("No reminders yet!", style: TextStyle(fontSize: 20)))
+                  ? Center(child: Text('No reminders yet!', style: TextStyle(fontSize: 20)))
                   : ListView.builder(
                       itemCount: plans.length,
                       itemBuilder: (context, index) => PlanTile(
@@ -140,6 +139,7 @@ class _RemindersPageState extends State<RemindersPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => createUpdatePlan(),
         tooltip: 'Add Plan',
+        backgroundColor: Colors.purple[200],
         child: Icon(Icons.add),
       ),
     );
