@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pet_care_app/main.dart';
 
-class Reminders extends StatefulWidget {
-  const Reminders({super.key});
+class RemindersPage extends StatefulWidget {
+  const RemindersPage({super.key});
 
   @override
-  State<Reminders> createState() => _RemindersState();
+  State<RemindersPage> createState() => _RemindersPageState();
 }
 
 class Plan {
@@ -30,7 +30,7 @@ class Plan {
     {'High': Colors.red.shade300, 'Medium': Colors.orange.shade300, 'Low': Colors.blue.shade300}[priority] ?? Colors.grey;
 }
 
-class _RemindersState extends State<Reminders> {
+class _RemindersPageState extends State<RemindersPage> {
   List<Plan> plans = [];
 
   void createUpdatePlan({Plan? plan}) {

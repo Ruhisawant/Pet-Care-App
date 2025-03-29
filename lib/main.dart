@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'reminders.dart';
-import 'care.dart';
+import 'schedule.dart';
+import 'illness.dart';
 
 void main() {
   runApp(const PetCareApp());
@@ -41,7 +42,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Reminders(),
+                    builder: (context) => RemindersPage(),
                   ),
                 );
               },
@@ -52,11 +53,22 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Care(),
+                    builder: (context) => SchedulePage(),
                   ),
                 );
               },
               child: Text('Go to Care')
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => IllnessPage(),
+                  ),
+                );
+              },
+              child: Text('Go to Illness')
             ),
           ],
         ),
