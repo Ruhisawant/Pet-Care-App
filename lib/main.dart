@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'reminders.dart';
-import 'schedule.dart';
+import 'schedules.dart';
 import 'illness.dart';
 
 void main() {
@@ -53,11 +53,11 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SchedulePage(),
+                    builder: (context) => SchedulesPage(),
                   ),
                 );
               },
-              child: Text('Go to Care')
+              child: Text('Go to Schedule')
             ),
             ElevatedButton(
               onPressed: () {

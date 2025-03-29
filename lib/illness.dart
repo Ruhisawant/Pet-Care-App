@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pet_care_app/main.dart';
 
 class IllnessPage extends StatefulWidget {
   const IllnessPage({super.key});
@@ -9,7 +8,7 @@ class IllnessPage extends StatefulWidget {
 }
 
 class _IllnessPageState extends State<IllnessPage> {
-  final Map<String, Map<String, List<String>>> symptomDetails = {
+  static const Map<String, Map<String, List<String>>> symptomInfo = {
     'Persistent Coughing': {
       'Potential Illnesses': ['Feline Asthma', 'Bronchitis', 'Heartworm Disease'],
       'Possible Complications': ['Respiratory distress', 'Lung inflammation'],
@@ -72,33 +71,37 @@ class _IllnessPageState extends State<IllnessPage> {
     },
   };
 
-  void _showIllnessAlert(BuildContext context, String symptom) {
+  void _showIllnessDetails(BuildContext context, String symptom) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Illness Guide'),
           content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: symptomDetails[symptom]!.entries.map((entry) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${entry.key}:',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      ...entry.value.map((illness) => Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text('• $illness'),
-                          )),
-                    ],
-                  ),
-                );
-              }).toList(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: symptomInfo[symptom]!.entries.map((entry) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${entry.key}:',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 4),
+                        ...entry.value.map((illness) => Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Text('• $illness'),
+                            )),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ),
           actions: <Widget>[
@@ -115,56 +118,41 @@ class _IllnessPageState extends State<IllnessPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                ElevatedButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomePage()),
-                  ),
-                  child: const Text('Home'),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Symptoms:',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: symptomDetails.keys.length,
-                      itemBuilder: (context, index) {
-                        String symptom = symptomDetails.keys.elementAt(index);
-                        return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 6.0),
-                          child: ListTile(
-                            title: Text(symptom),
-                            onTap: () => _showIllnessAlert(context, symptom),
-                            trailing: const Icon(Icons.medical_information_outlined),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
+      appBar: AppBar(
+        backgroundColor: Colors.purple[100],
+        title: const Text('Illness'),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Does your pet have any of these symptoms?:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-            ),
+              const SizedBox(height: 10),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: symptomInfo.keys.length,
+                itemBuilder: (context, index) {
+                  String symptom = symptomInfo.keys.elementAt(index);
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 6.0),
+                    color: Colors.purple[200],
+                    child: ListTile(
+                      title: Text(symptom),
+                      onTap: () => _showIllnessDetails(context, symptom),
+                      trailing: const Icon(Icons.medical_information_outlined),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
