@@ -35,6 +35,7 @@ class _MainPageState extends State<MainPage> {
   final TextEditingController _controller = TextEditingController();
   String _nameText = "Input Name";
   String _asset = "assets/images/Dog.png";
+  String _tip = "";
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +112,55 @@ class _MainPageState extends State<MainPage> {
                   ),
                 ),
                 Expanded(flex: 4, child: SizedBox(width: 1)),
+              ],
+            ),
+            const SizedBox(height: 100),
+            Row(
+              children: [
+                Expanded(flex: 1, child: SizedBox(width: 1)),
+                Expanded(
+                  flex: 6,
+                  child: Container(
+                    height: 200,
+                    width: 200,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 60, 70, 80),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black,
+                          blurRadius: 10.0,
+                          spreadRadius: 2.0,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 2,
+                          child: Center(
+                            child: const Text(
+                              "Tip",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Center(
+                            child: Text(
+                              _tip,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        Expanded(flex: 1, child: SizedBox(width: 1)),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(flex: 3, child: SizedBox(width: 1)),
               ],
             ),
           ],
