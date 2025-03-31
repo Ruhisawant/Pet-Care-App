@@ -90,9 +90,7 @@ class _MainPageState extends State<MainPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => IllnessPage(),
-                ),
+                MaterialPageRoute(builder: (context) => RemindersPage()),
               );
             },
             child: const Icon(Icons.restaurant, color: Colors.white),
@@ -102,9 +100,7 @@ class _MainPageState extends State<MainPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => SchedulesPage(),
-                ),
+                MaterialPageRoute(builder: (context) => SchedulesPage()),
               );
             },
             child: const Icon(Icons.event, color: Colors.white),
@@ -114,11 +110,14 @@ class _MainPageState extends State<MainPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => RemindersPage(),
-                ),
+                MaterialPageRoute(builder: (context) => IllnessPage()),
               );
             },
+            child: const Icon(Icons.medication, color: Colors.white),
+          ),
+          const SizedBox(height: 16),
+          FloatingActionButton(
+            onPressed: () {},
             shape: CircleBorder(),
             child: const Icon(Icons.question_mark, color: Colors.white),
           ),
