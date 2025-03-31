@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'reminders.dart';
 import 'schedules.dart';
 import 'illness.dart';
+import 'database_helper.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final dbHelper = DatabaseHelper.instance;
+  await dbHelper.populateDefaultTips();
   runApp(const PetCareApp());
 }
 
@@ -36,6 +40,16 @@ class _MainPageState extends State<MainPage> {
   String _nameText = "Input Name";
   String _asset = "assets/images/Dog.png";
   String _tip = "Click the Question Mark";
+  final DatabaseHelper _dbHelper = DatabaseHelper.instance;
+
+  Future<void> _getRandomTip() async {
+    final tip = await _dbHelper.getRandomTip();
+    if (tip != null) {
+      setState(() {
+        _tip = tip.content;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +168,8 @@ class _MainPageState extends State<MainPage> {
                           child: Center(
                             child: Text(
                               _tip,
-                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white, fontSize: 16),
                             ),
                           ),
                         ),
@@ -203,7 +218,7 @@ class _MainPageState extends State<MainPage> {
           ),
           const SizedBox(height: 16),
           FloatingActionButton(
-            onPressed: () {},
+            onPressed: _getRandomTip,
             shape: CircleBorder(),
             child: const Icon(Icons.question_mark, color: Colors.white),
           ),
@@ -212,3 +227,4 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
+
