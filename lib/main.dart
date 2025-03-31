@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'reminders.dart';
+import 'schedules.dart';
+import 'illness.dart';
 
 void main() {
   runApp(const PetCareApp());
@@ -84,17 +87,38 @@ class _MainPageState extends State<MainPage> {
         verticalDirection: VerticalDirection.up,
         children: <Widget>[
           FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => IllnessPage(),
+                ),
+              );
+            },
             child: const Icon(Icons.restaurant, color: Colors.white),
           ),
           const SizedBox(height: 16),
           FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SchedulesPage(),
+                ),
+              );
+            },
             child: const Icon(Icons.event, color: Colors.white),
           ),
           const SizedBox(height: 16),
           FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RemindersPage(),
+                ),
+              );
+            },
             shape: CircleBorder(),
             child: const Icon(Icons.question_mark, color: Colors.white),
           ),
