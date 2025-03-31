@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pet_care_app/main.dart';
 
 class RemindersPage extends StatefulWidget {
   const RemindersPage({super.key});

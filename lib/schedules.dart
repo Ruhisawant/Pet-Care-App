@@ -166,7 +166,7 @@ class _SchedulesPageState extends State<SchedulesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue[100],
+        backgroundColor: Colors.indigo[200],
         title: const Text('Schedules'),
       ),
       body: Stack(
@@ -177,14 +177,16 @@ class _SchedulesPageState extends State<SchedulesPage> {
             child: FloatingActionButton.small(
               onPressed: () => openScheduleDialog(),
               tooltip: 'Add Schedule',
-              backgroundColor: Colors.blue[200],
+              backgroundColor: Colors.indigo[300],
               child: Icon(Icons.add),
             ),
           ),
+          
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
+                SizedBox(height: 45),
                 Expanded(
                   child: petSchedules.isEmpty
                       ? Center(child: Text('No schedules yet!', style: TextStyle(fontSize: 20)))
@@ -241,8 +243,9 @@ class PetScheduleTile extends StatelessWidget {
           icon: Icon(schedule.isCompleted ? Icons.check_circle : Icons.circle_outlined, color: schedule.isCompleted ? Colors.green : Colors.grey),
           onPressed: onToggleCompletion,
         ),
-        title: Text(schedule.title, style: TextStyle(fontWeight: FontWeight.bold, decoration: schedule.isCompleted ? TextDecoration.lineThrough : null)),
-        subtitle: Text('Date: ${schedule.scheduledDate.toLocal().toString().split(' ')[0]}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+        title: Text('Your pet needs to be given ${schedule.category} on ${schedule.scheduledDate.toLocal().toString().split(' ')[0]}',
+          style: TextStyle(fontWeight: FontWeight.bold, decoration: schedule.isCompleted ? TextDecoration.lineThrough : null)),
+        subtitle: Text('Frequency: ${schedule.frequency}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [IconButton(icon: Icon(Icons.edit), onPressed: onEdit), IconButton(icon: Icon(Icons.delete), onPressed: onDelete)],
