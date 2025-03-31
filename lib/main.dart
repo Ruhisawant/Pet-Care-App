@@ -35,7 +35,7 @@ class _MainPageState extends State<MainPage> {
   final TextEditingController _controller = TextEditingController();
   String _nameText = "Input Name";
   String _asset = "assets/images/Dog.png";
-  String _tip = "";
+  String _tip = "Click the Question Mark";
 
   @override
   Widget build(BuildContext context) {
@@ -141,8 +141,11 @@ class _MainPageState extends State<MainPage> {
                           flex: 2,
                           child: Center(
                             child: const Text(
-                              "Tip",
-                              style: TextStyle(color: Colors.white),
+                              "Tips",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
                             ),
                           ),
                         ),
