@@ -32,6 +32,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  final TextEditingController _controller = TextEditingController();
   String _nameText = "Input Name";
   String _asset = "assets/images/Dog.png";
 
@@ -52,7 +53,39 @@ class _MainPageState extends State<MainPage> {
                 Expanded(
                   flex: 2,
                   child: FloatingActionButton.small(
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text('Input Name'),
+                            content: TextField(
+                              controller: _controller,
+                              decoration: InputDecoration(
+                                hintText: 'Type here...',
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _nameText = _controller.text;
+                                  });
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Save'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
                     shape: CircleBorder(),
                     child: Icon(Icons.edit, color: Colors.white),
                   ),
