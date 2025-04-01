@@ -194,7 +194,7 @@ class _MainPageState extends State<MainPage> {
                 MaterialPageRoute(builder: (context) => RemindersPage()),
               );
             },
-            child: const Icon(Icons.restaurant, color: Colors.white),
+            child: const Icon(Icons.event, color: Colors.white),
           ),
           const SizedBox(height: 16),
           FloatingActionButton(
@@ -204,7 +204,7 @@ class _MainPageState extends State<MainPage> {
                 MaterialPageRoute(builder: (context) => SchedulesPage()),
               );
             },
-            child: const Icon(Icons.event, color: Colors.white),
+            child: const Icon(Icons.restaurant, color: Colors.white),
           ),
           const SizedBox(height: 16),
           FloatingActionButton(
