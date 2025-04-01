@@ -191,20 +191,20 @@ class _MainPageState extends State<MainPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => RemindersPage()),
+                MaterialPageRoute(builder: (context) => SchedulesPage()),
               );
             },
-            child: const Icon(Icons.event, color: Colors.white),
+            child: const Icon(Icons.restaurant, color: Colors.white),
           ),
           const SizedBox(height: 16),
           FloatingActionButton(
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SchedulesPage()),
+                MaterialPageRoute(builder: (context) => RemindersPage()),
               );
             },
-            child: const Icon(Icons.restaurant, color: Colors.white),
+            child: const Icon(Icons.event, color: Colors.white),
           ),
           const SizedBox(height: 16),
           FloatingActionButton(
